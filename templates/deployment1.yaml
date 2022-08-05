@@ -6,17 +6,17 @@ spec:
   replicas: {{ Values.replicaCount }}
   selector:
     matchLabels:
-      app: jenkins-server
+      app: drupal
   template:
     metadata:
       labels:
-        app: jenkins-server
+        app: drupal
     spec:
       securityContext:
         fsGroup: {{ .Values.podSecurityContext.fsGroup }}
         runAsUser: {{ .Values.securityContext.runAsUser }}
       containers:
-        - name: jenkins
+        - name: drupal
           image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag }}
           ports:
             {{- range .Values.containerPorts }}
