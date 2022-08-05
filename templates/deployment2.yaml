@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ printf "%s-%s" .Release.Name .Chart.Name }}
+spec:
+  replicas: {{ Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: jenkins-server
+  template:
+    metadata:
+      labels:
+        app: jenkins-server
+    spec:
+      securityContext:
+        fsGroup: {{ .Values.podSecurityContext.fsGroup }}
+        runAsUser: {{ .Values.securityContext.runAsUser }}
+      containers:
+        - name: jenkins
+          image: {{ printf "%s:%s" .Values.image.repository .Values.image.tag }}
+          ports:
+            {{- range .Values.containerPorts }}
+            - name: {{ .name }}
+              containerPort: {{ .port }}
+            {{- end }}
+          volumeMounts:
+          - mountPath: /etc/{{ .Release.Name }}
+            name: {{ .Release.Name }}-configmap
+      volumes:
+      - name: {{ .Release.Name }}-configmap
+        configMap: 
+          name: {{ .Release.Name }}-configmap
+          items:
+            - key: {{ .Release.Name }}.properties
+              path: {{ .Release.Name }}.properties
