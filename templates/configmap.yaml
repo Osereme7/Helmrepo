@@ -1,18 +1,9 @@
-apiVersion: networking.k8s.io/v1
-kind: Ingress
+apiVersion: v1
+kind: ConfigMap
 metadata:
-  name: {{ .Release.Name }}-ingress 
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
-spec:
-  ingressClassName: {{default "test" .Values.ingress.className }}
-  rules:
-  - http:
-      paths:
-      - path: /
-        pathType: Prefix
-        backend:
-          service:
-            name: {{ printf "%s-%s" .Release.Name .Chart.Name }}
-            port:
-              number: 80
+  name: {{ .Release.Name }}-configmap
+data:
+  {{ .Release.Name }}.properties: |+
+  {{- range split "\n" .Values.properties }}
+    {{ . }}
+  {{- end }}
