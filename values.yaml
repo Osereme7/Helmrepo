@@ -3,7 +3,7 @@ apiversion: apps/v1
 replicaCount: 1
 
 image:
-  repository: bitnami/jenkins
+  repository: bitnami/drupal
   pullPolicy: IfNotPresent
   tag: latest
 
